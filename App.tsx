@@ -619,7 +619,7 @@ const DeveloperVoiceNote = () => {
   const [progress, setProgress] = useState(0);
 
   const audioRef = useRef(
-    new Audio("./massage-from-dev.mp3") 
+    new Audio("./Media/massage-from-dev.mp3") 
   );
 
   const [duration, setDuration] = useState(15);
@@ -721,7 +721,7 @@ const DeveloperVoiceNote = () => {
         {/* Developer Image */}
         <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-white/20 shadow-sm relative group/img">
            <img 
-             src="./man-with-computer-and-headset-svgrepo-com.svg" 
+             src="./Media/man-with-computer-and-headset-svgrepo-com.svg"
              alt="Developer" 
              className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-110" 
            />
