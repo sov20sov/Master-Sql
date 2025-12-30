@@ -5,7 +5,7 @@ import {
   BookOpen, Code, Home, GraduationCap, Moon, Sun, Menu, X, CheckCircle, Play, HelpCircle, 
   FileText, AlertTriangle, Instagram, Sparkles, RefreshCw, MessageCircle, Clock, ArrowLeft, Award, Database, PlusCircle, Trash2, Key, Save, Layers, Table, Info, RotateCcw, Download, Copy, ChevronRight, ChevronLeft, ArrowUp, ArrowDown, ArrowUpDown,
   XCircle, ExternalLink, ChevronDown, Terminal, PlayCircle, ArrowRight,
-  Layout as AlignLeft, Search
+  Layout as AlignLeft, Search, Bot, Send, Minimize2, Maximize2
 } from 'lucide-react';
 import { courseData, resources, referenceMaterials, dictionaryTerms } from './data';
 import { executeMockSql, resetDb, getDbSchema } from './services/mockSql';
@@ -92,6 +92,399 @@ const Snowfall = () => {
   );
 };
 
+// Festive Christmas Lights
+const ChristmasLights = () => {
+  const lights = useMemo(() => Array.from({ length: 20 }).map((_, i) => ({
+    id: i,
+    left: `${(i / 20) * 100}%`,
+    delay: `${i * 0.2}s`,
+    color: ['#ef4444', '#22c55e', '#3b82f6', '#f59e0b', '#a855f7'][i % 5]
+  })), []);
+
+  return (
+    <div className="fixed top-0 left-0 right-0 h-2 pointer-events-none z-30 overflow-hidden" aria-hidden="true">
+      <div className="flex h-full">
+        {lights.map(light => (
+          <div
+            key={light.id}
+            className="flex-1 relative"
+            style={{ animationDelay: light.delay }}
+          >
+            <div
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full animate-pulse shadow-lg"
+              style={{
+                backgroundColor: light.color,
+                boxShadow: `0 0 10px ${light.color}, 0 0 20px ${light.color}`,
+                animation: 'twinkle 1.5s ease-in-out infinite'
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Festive Confetti
+const FestiveConfetti = () => {
+  const confetti = useMemo(() => Array.from({ length: 30 }).map((_, i) => ({
+    id: i,
+    left: `${Math.random() * 100}%`,
+    delay: `${Math.random() * 3}s`,
+    duration: `${Math.random() * 3 + 2}s`,
+    color: ['#ef4444', '#22c55e', '#3b82f6', '#f59e0b', '#a855f7', '#ec4899', '#14b8a6'][Math.floor(Math.random() * 7)],
+    size: `${Math.random() * 8 + 4}px`,
+    rotation: `${Math.random() * 360}deg`
+  })), []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+      {confetti.map(item => (
+        <div
+          key={item.id}
+          className="absolute top-[-10px] rounded-sm animate-confetti-fall"
+          style={{
+            left: item.left,
+            width: item.size,
+            height: item.size,
+            backgroundColor: item.color,
+            animationDelay: item.delay,
+            animationDuration: item.duration,
+            transform: `rotate(${item.rotation})`
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Festive Ornaments
+const FestiveOrnaments = () => {
+  const ornaments = useMemo(() => [
+    { id: 1, top: '15%', left: '10%', emoji: '🎄', delay: '0s' },
+    { id: 2, top: '25%', left: '85%', emoji: '⭐', delay: '0.5s' },
+    { id: 3, top: '60%', left: '5%', emoji: '🎁', delay: '1s' },
+    { id: 4, top: '70%', left: '90%', emoji: '❄️', delay: '1.5s' },
+    { id: 5, top: '40%', left: '3%', emoji: '🎅', delay: '2s' },
+  ], []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden" aria-hidden="true">
+      {ornaments.map(ornament => (
+        <div
+          key={ornament.id}
+          className="absolute text-4xl md:text-5xl animate-float opacity-20 hover:opacity-40 transition-opacity"
+          style={{
+            top: ornament.top,
+            left: ornament.left,
+            animationDelay: ornament.delay,
+            animationDuration: '6s'
+          }}
+        >
+          {ornament.emoji}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// --- SQLy Assistant Widget ---
+
+// API Service for SQLy
+const sqlyApiService = {
+  async sendMessage(message: string, sessionId: string, context?: string): Promise<{ response: string; conversationId: string; suggestedActions?: string[] }> {
+    try {
+      // TODO: Replace with your actual backend API endpoint
+      // For production, set this to your backend URL
+      const API_BASE_URL = process.env.VITE_API_BASE_URL || 'http://localhost:3000';
+      
+      const response = await fetch(`${API_BASE_URL}/api/sqly/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message,
+          sessionId,
+          context,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      // Fallback response if API is unavailable
+      console.warn('SQLy API unavailable, using fallback:', error);
+      return {
+        response: "أعتذر، أنا SQLy مساعدك الذكي لتعلم قواعد البيانات! 🎓\n\nحالياً، الخدمة قيد التطوير. يمكنني مساعدتك في:\n\n• شرح أوامر SQL\n• تصحيح الأخطاء في الاستعلامات\n• شرح مفاهيم قواعد البيانات\n• إرشادات تصميم قواعد البيانات\n\nكيف يمكنني مساعدتك اليوم؟",
+        conversationId: sessionId,
+        suggestedActions: ['شرح SELECT', 'تصحيح استعلام', 'مفاهيم أساسية']
+      };
+    }
+  }
+};
+
+// Generate unique session ID
+const generateSessionId = (): string => {
+  return `sqly_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+};
+
+// SQLy Widget Component
+interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
+
+const SQLyWidget: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      role: 'assistant',
+      content: 'مرحباً! أنا SQLy، مساعدك الذكي لتعلم قواعد البيانات. 🎓\n\nكيف يمكنني مساعدتك اليوم؟',
+      timestamp: new Date()
+    }
+  ]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [sessionId] = useState(() => generateSessionId());
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const location = useLocation();
+
+  // Get current page context
+  const getContext = (): string => {
+    if (location.pathname.startsWith('/learn/')) {
+      return 'lesson_page';
+    } else if (location.pathname === '/playground') {
+      return 'playground';
+    } else if (location.pathname === '/dictionary') {
+      return 'dictionary';
+    }
+    return 'general';
+  };
+
+  // Scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Auto-focus input when widget opens
+  useEffect(() => {
+    if (isOpen && !isMinimized) {
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [isOpen, isMinimized]);
+
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim() || isLoading) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: inputMessage.trim(),
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setIsLoading(true);
+
+    try {
+      const response = await sqlyApiService.sendMessage(
+        userMessage.content,
+        sessionId,
+        getContext()
+      );
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: response.response,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'عذراً، حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const handleQuickAction = (action: string) => {
+    setInputMessage(action);
+    setTimeout(() => handleSendMessage(), 100);
+  };
+
+  return (
+    <>
+      {/* Floating Button */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 left-6 z-50 w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 flex items-center justify-center text-white transition-all duration-300 hover:scale-110 animate-float group"
+          aria-label="فتح SQLy"
+        >
+          <Bot className="w-6 h-6 group-hover:scale-110 transition-transform" />
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse"></span>
+        </button>
+      )}
+
+      {/* Widget Panel */}
+      {isOpen && (
+        <div className={`fixed ${isMinimized ? 'bottom-6 left-6 w-80' : 'bottom-6 left-6 w-96 h-[600px]'} z-50 transition-all duration-300`}>
+          <div className="glass-morphism rounded-2xl shadow-2xl border border-slate-200/50 dark:border-white/10 flex flex-col h-full overflow-hidden backdrop-blur-xl">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 dark:from-cyan-900/20 dark:to-blue-900/20 px-4 py-3 flex items-center justify-between border-b border-slate-200/50 dark:border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                  <Bot className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-black text-sm text-slate-900 dark:text-white">SQLy</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">مساعد تعلم قواعد البيانات</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsMinimized(!isMinimized)}
+                  className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors"
+                  aria-label={isMinimized ? 'تكبير' : 'تصغير'}
+                >
+                  {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+                </button>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                  aria-label="إغلاق"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {!isMinimized && (
+              <>
+                {/* Messages */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700">
+                  {messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      {message.role === 'assistant' && (
+                        <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shrink-0">
+                          <Bot className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                      <div
+                        className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                          message.role === 'user'
+                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white'
+                        }`}
+                      >
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                        <p className="text-xs opacity-70 mt-1">
+                          {message.timestamp.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                      </div>
+                      {message.role === 'user' && (
+                        <div className="w-8 h-8 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center shrink-0">
+                          <span className="text-xs font-bold text-slate-600 dark:text-slate-300">أنت</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  {isLoading && (
+                    <div className="flex gap-3 justify-start">
+                      <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shrink-0">
+                        <Bot className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl px-4 py-3">
+                        <div className="flex gap-1">
+                          <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+                          <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+
+                {/* Quick Actions */}
+                {messages.length === 1 && (
+                  <div className="px-4 py-2 border-t border-slate-200/50 dark:border-white/10">
+                    <div className="flex flex-wrap gap-2">
+                      {['شرح SELECT', 'تصحيح استعلام', 'مفاهيم أساسية'].map((action) => (
+                        <button
+                          key={action}
+                          onClick={() => handleQuickAction(action)}
+                          className="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-cyan-100 dark:hover:bg-cyan-900/20 text-slate-700 dark:text-slate-300 rounded-lg transition-colors"
+                        >
+                          {action}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Input */}
+                <div className="p-4 border-t border-slate-200/50 dark:border-white/10">
+                  <div className="flex gap-2">
+                    <textarea
+                      ref={inputRef}
+                      value={inputMessage}
+                      onChange={(e) => setInputMessage(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder="اكتب سؤالك هنا..."
+                      className="flex-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
+                      rows={1}
+                      style={{ minHeight: '44px', maxHeight: '120px' }}
+                    />
+                    <button
+                      onClick={handleSendMessage}
+                      disabled={!inputMessage.trim() || isLoading}
+                      className="px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 disabled:from-slate-300 disabled:to-slate-400 text-white rounded-xl font-bold transition-all disabled:cursor-not-allowed flex items-center justify-center shrink-0"
+                    >
+                      {isLoading ? (
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <Send className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
 // --- Animation Components & Hooks ---
 
@@ -694,6 +1087,9 @@ const HomePage = () => {
         {/* Background Atmosphere Effects */}
         <Snowfall />
         <TwinkleStars />
+        <ChristmasLights />
+        <FestiveConfetti />
+        <FestiveOrnaments />
 
         <div className="max-w-7xl mx-auto px-6 pt-20 pb-20 relative z-10">
           {/* Hero Section */}
@@ -704,32 +1100,44 @@ const HomePage = () => {
               
               {/* Seasonal Branding & Greetings */}
               <div className="flex flex-col items-center lg:items-end gap-3 mb-2">
-                <div className="relative group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-100/40 dark:bg-cyan-900/20 border border-cyan-500/10 text-cyan-600 dark:text-cyan-400 text-xs font-bold backdrop-blur-sm animate-scale-in shadow-[0_0_15px_rgba(6,182,212,0.1)]">
-                  {/* Subtle Swinging Ornament */}
-                  <div className="absolute -top-6 left-4 lg:left-auto lg:-right-4 animate-swing hidden md:block">
-                     <div className="w-px h-6 bg-slate-300 dark:bg-slate-700 mx-auto"></div>
-                     <star className="w-3 h-3 text-yellow-400/60 fill-yellow-400/20" />
+                <div className="relative group inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-red-50/60 via-green-50/60 to-blue-50/60 dark:from-red-900/20 dark:via-green-900/20 dark:to-blue-900/20 border-2 border-red-200/30 dark:border-red-500/20 text-slate-700 dark:text-slate-200 text-xs font-black backdrop-blur-md animate-scale-in shadow-[0_0_20px_rgba(239,68,68,0.2)] hover:shadow-[0_0_30px_rgba(239,68,68,0.4)] transition-all duration-300">
+                  {/* Festive Swinging Ornament */}
+                  <div className="absolute -top-8 left-4 lg:left-auto lg:-right-4 animate-swing hidden md:block">
+                     <div className="w-px h-8 bg-gradient-to-b from-red-300 to-transparent dark:from-red-500 dark:to-transparent mx-auto"></div>
+                     <div className="text-2xl animate-sparkle">⭐</div>
                   </div>
 
-                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-cyan-500" />
-                  <span>منصة تعليمية ذكية 100%</span>
-                  <div className="w-px h-3 bg-cyan-500/20 mx-1"></div>
-                  <span className="text-blue-500 dark:text-cyan-300 flex items-center gap-1">
-                    🎄 <span className="font-black">تحديث  2026</span>
+                  <Sparkles className="w-4 h-4 animate-pulse text-red-500 dark:text-red-400" />
+                  <span className="flex items-center gap-1">
+                    <span className="animate-sparkle">🎄</span>
+                    <span>منصة تعليمية ذكية 100%</span>
+                  </span>
+                  <div className="w-px h-4 bg-gradient-to-b from-transparent via-slate-400 to-transparent mx-1"></div>
+                  <span className="text-red-600 dark:text-red-400 flex items-center gap-1.5 font-black">
+                    <span className="text-lg animate-bounce">🎉</span>
+                    <span>تحديث 2026</span>
+                    <span className="text-lg animate-sparkle">✨</span>
                   </span>
                 </div>
                 
-                <p className="text-sm font-bold text-slate-500 dark:text-slate-400 animate-fade-in-up delay-100 flex items-center gap-2">
-                  <span className="text-cyan-500">✨</span>
-                  عام جديد، رحلة تعلم جديدة نحو الاحتراف
+                <p className="text-sm font-bold text-slate-600 dark:text-slate-300 animate-fade-in-up delay-100 flex items-center gap-2 bg-gradient-to-r from-red-100/50 via-green-100/50 to-blue-100/50 dark:from-red-900/10 dark:via-green-900/10 dark:to-blue-900/10 px-4 py-2 rounded-full border border-red-200/20 dark:border-red-500/10 backdrop-blur-sm">
+                  <span className="text-lg animate-pulse">🎁</span>
+                  <span>عام جديد، رحلة تعلم جديدة نحو الاحتراف</span>
+                  <span className="text-lg animate-sparkle">🌟</span>
                 </p>
               </div>
               
-              <h1 className="text-5xl lg:text-6xl font-black leading-tight tracking-tight text-slate-900 dark:text-white reveal-hidden reveal-visible transition-all duration-1000">
-               تعلم قواعد البيانات
+              <h1 className="text-5xl lg:text-6xl font-black leading-tight tracking-tight text-slate-900 dark:text-white reveal-hidden reveal-visible transition-all duration-1000 relative">
+               <span className="relative z-10">تعلم قواعد البيانات</span>
+               <span className="absolute -top-2 -right-2 text-3xl animate-float opacity-60">🎄</span>
+               <span className="absolute -bottom-2 -left-2 text-3xl animate-float opacity-60" style={{ animationDelay: '1s' }}>❄️</span>
               </h1>
-              <h1 className="text-5xl lg:text-4.5xl font-black leading-tight tracking-tight mb-20 gradient-text animate-pulse-glow animate-sparkle">
-                 من الصفر الى الاحتراف
+              <h1 className="text-5xl lg:text-4.5xl font-black leading-tight tracking-tight mb-20 relative">
+                <span className="bg-gradient-to-r from-red-500 via-green-500 to-blue-500 bg-clip-text text-transparent animate-pulse-glow animate-sparkle">
+                  من الصفر الى الاحتراف
+                </span>
+                <span className="absolute -top-1 -right-1 text-2xl animate-bounce opacity-70">⭐</span>
+                <span className="absolute -bottom-1 -left-1 text-2xl animate-bounce opacity-70" style={{ animationDelay: '0.5s' }}>🎅</span>
               </h1>
               
               <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto lg:mx-0 animate-fade-in-up delay-200">
@@ -739,18 +1147,22 @@ const HomePage = () => {
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 animate-fade-in-up delay-300">
                 <Link 
                   to="/learn" 
-                  className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl font-bold text-white shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:-translate-y-1 transition-all overflow-hidden btn-interaction"
+                  className="group relative px-8 py-4 bg-gradient-to-r from-red-500 via-green-500 to-blue-500 rounded-2xl font-bold text-white shadow-lg shadow-red-500/30 hover:shadow-red-500/50 hover:-translate-y-1 transition-all overflow-hidden btn-interaction"
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    ابدأ التعلم الآن <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                    <span className="text-lg animate-bounce">🚀</span>
+                    ابدأ التعلم الآن 
+                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                   </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-green-500 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute -top-1 -right-1 text-xl opacity-0 group-hover:opacity-100 transition-opacity animate-sparkle">✨</div>
                 </Link>
                 
                 <Link 
                   to="/playground" 
-                  className="px-8 py-4 bg-white/80 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-700/50 text-slate-700 dark:text-white border border-slate-200 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-slate-500 rounded-2xl font-bold backdrop-blur-sm transition-all hover:-translate-y-1 flex items-center gap-2 btn-interaction"
+                  className="px-8 py-4 bg-white/80 dark:bg-slate-800/50 hover:bg-gradient-to-r hover:from-red-50 hover:via-green-50 hover:to-blue-50 dark:hover:from-red-900/20 dark:hover:via-green-900/20 dark:hover:to-blue-900/20 text-slate-700 dark:text-white border-2 border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-500/50 rounded-2xl font-bold backdrop-blur-sm transition-all hover:-translate-y-1 flex items-center gap-2 btn-interaction relative overflow-hidden"
                 >
+                  <span className="text-lg animate-pulse">🎯</span>
                   <Terminal className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
                   جرب المحاكي
                 </Link>
@@ -799,9 +1211,13 @@ const HomePage = () => {
 
           {/* Features Section */}
           <ScrollReveal>
-            <div className="text-center mb-16 space-y-4">
-               <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">لماذا تختار <span className="gradient-text">SQL Master</span></h2>
-               <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">صممنا كل جزء في المنصة ليخدم هدفاً واحداً: جعل تعلم قواعد البيانات أسهل وأمتع.</p>
+            <div className="text-center mb-16 space-y-4 relative">
+               <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-4xl animate-float opacity-30">🎄</div>
+               <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white relative z-10">
+                 لماذا تختار <span className="bg-gradient-to-r from-red-500 via-green-500 to-blue-500 bg-clip-text text-transparent animate-pulse-glow">SQL Master</span>
+                 <span className="ml-2 text-2xl animate-sparkle inline-block">⭐</span>
+               </h2>
+               <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto relative z-10">صممنا كل جزء في المنصة ليخدم هدفاً واحداً: جعل تعلم قواعد البيانات أسهل وأمتع.</p>
             </div>
           </ScrollReveal>
 
@@ -828,20 +1244,24 @@ const HomePage = () => {
                  title: "تطبيق عملي فوري", 
                  desc: "تعلم من خلال الممارسة المباشرة مع أمثلة حية وتمارين تفاعلية تعزز فهمك للمادة وترسخ المهارة." 
                }
-             ].map((feature, idx) => (
+             ].map((feature, idx) => {
+               const festiveEmojis = ['🎓', '💻', '✨'];
+               return (
                <ScrollReveal key={idx} delay={idx * 150}>
-                 <div className="group relative glass-morphism p-8 rounded-3xl hover-card overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl pointer-events-none"></div>
-                    <div className={`w-14 h-14 ${feature.bg} rounded-2xl flex items-center justify-center ${feature.color} mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                 <div className="group relative glass-morphism p-8 rounded-3xl hover-card overflow-hidden border-2 border-transparent hover:border-red-200/30 dark:hover:border-red-500/20 transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-green-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl pointer-events-none"></div>
+                    <div className="absolute top-4 right-4 text-2xl opacity-0 group-hover:opacity-100 transition-opacity animate-sparkle">{festiveEmojis[idx]}</div>
+                    <div className={`w-14 h-14 ${feature.bg} rounded-2xl flex items-center justify-center ${feature.color} mb-6 group-hover:scale-110 transition-transform duration-300 relative`}>
                        <feature.icon className="w-7 h-7" />
+                       <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
-                    <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-3">{feature.title}</h3>
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-3 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">{feature.title}</h3>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">
                        {feature.desc}
                     </p>
                  </div>
                </ScrollReveal>
-             ))}
+             )})}
           </section>
         </div>
       </div>
@@ -2181,10 +2601,11 @@ export default function App() {
            </main>
            
            <Footer />
+           
+           {/* SQLy Assistant Widget */}
+           <SQLyWidget />
         </div>
       </ThemeContext.Provider>
     </HashRouter>
   );
 }
-
-
