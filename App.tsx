@@ -34,159 +34,7 @@ const useTheme = () => {
 };
 
 
-// Subtle Twinkling Stars Component
-const TwinkleStars = () => {
-  const stars = useMemo(() => Array.from({ length: 12 }).map((_, i) => ({
-    id: i,
-    top: `${Math.random() * 60}%`,
-    left: `${Math.random() * 100}%`,
-    delay: `${Math.random() * 5}s`,
-    scale: Math.random() * 0.5 + 0.5
-  })), []);
-
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
-      {stars.map(star => (
-        <div 
-          key={star.id}
-          className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
-          style={{
-            top: star.top,
-            left: star.left,
-            animationDelay: star.delay,
-            transform: `scale(${star.scale})`
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-
-// Subtle Festive Snowfall
-const Snowfall = () => {
-  const flakes = useMemo(() => Array.from({ length: 22 }).map((_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    size: `${Math.random() * 3 + 2}px`,
-    duration: `${Math.random() * 15 + 15}s`,
-    delay: `${Math.random() * 10}s`,
-  })), []);
-
-  return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-      {flakes.map(flake => (
-        <div 
-          key={flake.id}
-          className="absolute top-[-20px] bg-white rounded-full opacity-10 blur-[0.5px] animate-snowfall"
-          style={{
-            left: flake.left,
-            width: flake.size,
-            height: flake.size,
-            animationDuration: flake.duration,
-            animationDelay: flake.delay
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-// Festive Christmas Lights
-const ChristmasLights = () => {
-  const lights = useMemo(() => Array.from({ length: 20 }).map((_, i) => ({
-    id: i,
-    left: `${(i / 20) * 100}%`,
-    delay: `${i * 0.2}s`,
-    color: ['#ef4444', '#22c55e', '#3b82f6', '#f59e0b', '#a855f7'][i % 5]
-  })), []);
-
-  return (
-    <div className="fixed top-0 left-0 right-0 h-2 pointer-events-none z-30 overflow-hidden" aria-hidden="true">
-      <div className="flex h-full">
-        {lights.map(light => (
-          <div
-            key={light.id}
-            className="flex-1 relative"
-            style={{ animationDelay: light.delay }}
-          >
-            <div
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full animate-pulse shadow-lg"
-              style={{
-                backgroundColor: light.color,
-                boxShadow: `0 0 10px ${light.color}, 0 0 20px ${light.color}`,
-                animation: 'twinkle 1.5s ease-in-out infinite'
-              }}
-            />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-// Festive Confetti
-const FestiveConfetti = () => {
-  const confetti = useMemo(() => Array.from({ length: 30 }).map((_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    delay: `${Math.random() * 3}s`,
-    duration: `${Math.random() * 3 + 2}s`,
-    color: ['#ef4444', '#22c55e', '#3b82f6', '#f59e0b', '#a855f7', '#ec4899', '#14b8a6'][Math.floor(Math.random() * 7)],
-    size: `${Math.random() * 8 + 4}px`,
-    rotation: `${Math.random() * 360}deg`
-  })), []);
-
-  return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-      {confetti.map(item => (
-        <div
-          key={item.id}
-          className="absolute top-[-10px] rounded-sm animate-confetti-fall"
-          style={{
-            left: item.left,
-            width: item.size,
-            height: item.size,
-            backgroundColor: item.color,
-            animationDelay: item.delay,
-            animationDuration: item.duration,
-            transform: `rotate(${item.rotation})`
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-// Festive Ornaments
-const FestiveOrnaments = () => {
-  const ornaments = useMemo(() => [
-    { id: 1, top: '15%', left: '10%', emoji: '🎄', delay: '0s' },
-    { id: 2, top: '25%', left: '85%', emoji: '⭐', delay: '0.5s' },
-    { id: 3, top: '60%', left: '5%', emoji: '🎁', delay: '1s' },
-    { id: 4, top: '70%', left: '90%', emoji: '❄️', delay: '1.5s' },
-    { id: 5, top: '40%', left: '3%', emoji: '🎅', delay: '2s' },
-  ], []);
-
-  return (
-    <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden" aria-hidden="true">
-      {ornaments.map(ornament => (
-        <div
-          key={ornament.id}
-          className="absolute text-4xl md:text-5xl animate-float opacity-20 hover:opacity-40 transition-opacity"
-          style={{
-            top: ornament.top,
-            left: ornament.left,
-            animationDelay: ornament.delay,
-            animationDuration: '6s'
-          }}
-        >
-          {ornament.emoji}
-        </div>
-      ))}
-    </div>
-  );
-};
+// --- SQLy Assistant Widget ---
 
 // --- SQLy Assistant Widget ---
 
@@ -1083,61 +931,20 @@ const HomePage = () => {
   return (
     <PageTransition>
       <div className="min-h-screen relative overflow-hidden font-sans text-slate-900 dark:text-slate-100">
-        
-        {/* Background Atmosphere Effects */}
-        <Snowfall />
-        <TwinkleStars />
-        <ChristmasLights />
-        <FestiveConfetti />
-        <FestiveOrnaments />
-
         <div className="max-w-7xl mx-auto px-6 pt-20 pb-20 relative z-10">
           {/* Hero Section */}
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
             
             {/* Text Content - Renders Immediately */}
             <div className="space-y-8 text-center lg:text-right relative z-10 animate-fade-in-up">
-              
-              {/* Seasonal Branding & Greetings */}
-              <div className="flex flex-col items-center lg:items-end gap-3 mb-2">
-                <div className="relative group inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-red-50/60 via-green-50/60 to-blue-50/60 dark:from-red-900/20 dark:via-green-900/20 dark:to-blue-900/20 border-2 border-red-200/30 dark:border-red-500/20 text-slate-700 dark:text-slate-200 text-xs font-black backdrop-blur-md animate-scale-in shadow-[0_0_20px_rgba(239,68,68,0.2)] hover:shadow-[0_0_30px_rgba(239,68,68,0.4)] transition-all duration-300">
-                  {/* Festive Swinging Ornament */}
-                  <div className="absolute -top-8 left-4 lg:left-auto lg:-right-4 animate-swing hidden md:block">
-                     <div className="w-px h-8 bg-gradient-to-b from-red-300 to-transparent dark:from-red-500 dark:to-transparent mx-auto"></div>
-                     <div className="text-2xl animate-sparkle">⭐</div>
-                  </div>
 
-                  <Sparkles className="w-4 h-4 animate-pulse text-red-500 dark:text-red-400" />
-                  <span className="flex items-center gap-1">
-                    <span className="animate-sparkle">🎄</span>
-                    <span>منصة تعليمية ذكية 100%</span>
-                  </span>
-                  <div className="w-px h-4 bg-gradient-to-b from-transparent via-slate-400 to-transparent mx-1"></div>
-                  <span className="text-red-600 dark:text-red-400 flex items-center gap-1.5 font-black">
-                    <span className="text-lg animate-bounce">🎉</span>
-                    <span>تحديث 2026</span>
-                    <span className="text-lg animate-sparkle">✨</span>
-                  </span>
-                </div>
-                
-                <p className="text-sm font-bold text-slate-600 dark:text-slate-300 animate-fade-in-up delay-100 flex items-center gap-2 bg-gradient-to-r from-red-100/50 via-green-100/50 to-blue-100/50 dark:from-red-900/10 dark:via-green-900/10 dark:to-blue-900/10 px-4 py-2 rounded-full border border-red-200/20 dark:border-red-500/10 backdrop-blur-sm">
-                  <span className="text-lg animate-pulse">🎁</span>
-                  <span>عام جديد، رحلة تعلم جديدة نحو الاحتراف</span>
-                  <span className="text-lg animate-sparkle">🌟</span>
-                </p>
-              </div>
-              
-              <h1 className="text-5xl lg:text-6xl font-black leading-tight tracking-tight text-slate-900 dark:text-white reveal-hidden reveal-visible transition-all duration-1000 relative">
-               <span className="relative z-10">تعلم قواعد البيانات</span>
-               <span className="absolute -top-2 -right-2 text-3xl animate-float opacity-60">🎄</span>
-               <span className="absolute -bottom-2 -left-2 text-3xl animate-float opacity-60" style={{ animationDelay: '1s' }}>❄️</span>
+              <h1 className="text-5xl lg:text-6xl font-black leading-tight tracking-tight text-slate-900 dark:text-white reveal-hidden reveal-visible transition-all duration-1000">
+               تعلم قواعد البيانات
               </h1>
-              <h1 className="text-5xl lg:text-4.5xl font-black leading-tight tracking-tight mb-20 relative">
-                <span className="bg-gradient-to-r from-red-500 via-green-500 to-blue-500 bg-clip-text text-transparent animate-pulse-glow animate-sparkle">
+              <h1 className="text-5xl lg:text-4.5xl font-black leading-tight tracking-tight mb-20">
+                <span className="bg-gradient-to-r from-red-500 via-green-500 to-blue-500 bg-clip-text text-transparent animate-pulse-glow">
                   من الصفر الى الاحتراف
                 </span>
-                <span className="absolute -top-1 -right-1 text-2xl animate-bounce opacity-70">⭐</span>
-                <span className="absolute -bottom-1 -left-1 text-2xl animate-bounce opacity-70" style={{ animationDelay: '0.5s' }}>🎅</span>
               </h1>
               
               <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto lg:mx-0 animate-fade-in-up delay-200">
@@ -1155,7 +962,6 @@ const HomePage = () => {
                     <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-green-500 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="absolute -top-1 -right-1 text-xl opacity-0 group-hover:opacity-100 transition-opacity animate-sparkle">✨</div>
                 </Link>
                 
                 <Link 
@@ -1211,11 +1017,9 @@ const HomePage = () => {
 
           {/* Features Section */}
           <ScrollReveal>
-            <div className="text-center mb-16 space-y-4 relative">
-               <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-4xl animate-float opacity-30">🎄</div>
-               <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white relative z-10">
+            <div className="text-center mb-16 space-y-4">
+               <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">
                  لماذا تختار <span className="bg-gradient-to-r from-red-500 via-green-500 to-blue-500 bg-clip-text text-transparent animate-pulse-glow">SQL Master</span>
-                 <span className="ml-2 text-2xl animate-sparkle inline-block">⭐</span>
                </h2>
                <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto relative z-10">صممنا كل جزء في المنصة ليخدم هدفاً واحداً: جعل تعلم قواعد البيانات أسهل وأمتع.</p>
             </div>
@@ -1245,12 +1049,9 @@ const HomePage = () => {
                  desc: "تعلم من خلال الممارسة المباشرة مع أمثلة حية وتمارين تفاعلية تعزز فهمك للمادة وترسخ المهارة." 
                }
              ].map((feature, idx) => {
-               const festiveEmojis = ['🎓', '💻', '✨'];
                return (
                <ScrollReveal key={idx} delay={idx * 150}>
                  <div className="group relative glass-morphism p-8 rounded-3xl hover-card overflow-hidden border-2 border-transparent hover:border-red-200/30 dark:hover:border-red-500/20 transition-all duration-300">
-                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-green-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl pointer-events-none"></div>
-                    <div className="absolute top-4 right-4 text-2xl opacity-0 group-hover:opacity-100 transition-opacity animate-sparkle">{festiveEmojis[idx]}</div>
                     <div className={`w-14 h-14 ${feature.bg} rounded-2xl flex items-center justify-center ${feature.color} mb-6 group-hover:scale-110 transition-transform duration-300 relative`}>
                        <feature.icon className="w-7 h-7" />
                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse opacity-0 group-hover:opacity-100 transition-opacity"></div>
